@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
 
 class RickMortyListView extends StatefulWidget {
@@ -49,41 +50,44 @@ class _RickMortyListViewState extends State<RickMortyListView> {
         controller: scrollController,
         itemBuilder: (context, index) {
           final rickMorty = widget.rickMorty[index];
-          return Padding(
-            padding: const EdgeInsets.all(10),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Container(
-                color: Colors.white24,
-                height: sized.height * 0.2,
-                child: Row(
-                  children: [
-                    Image.network(
-                      rickMorty.image,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress != null) {
-                          return FadeInLeft(
-                            child: Container(
-                              width: 150,
-                              height: 150,
-                              decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                  colors: [Colors.transparent, Colors.white54],
+          return GestureDetector(
+            onTap: ()=>context.push('/character/${rickMorty.id}'),
+            child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Container(
+                  color: Colors.white24,
+                  height: sized.height * 0.2,
+                  child: Row(
+                    children: [
+                      Image.network(
+                        rickMorty.image,
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress != null) {
+                            return FadeInLeft(
+                              child: Container(
+                                width: 150,
+                                height: 150,
+                                decoration: const BoxDecoration(
+                                  gradient: LinearGradient(
+                                    begin: Alignment.bottomCenter,
+                                    end: Alignment.topCenter,
+                                    colors: [Colors.transparent, Colors.white54],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        }
-                        return FadeInLeft(child: child);
-                      },
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    Flexible(child: _Text(rickMorty: rickMorty))
-                  ],
+                            );
+                          }
+                          return FadeInLeft(child: child);
+                        },
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Flexible(child: _Text(rickMorty: rickMorty))
+                    ],
+                  ),
                 ),
               ),
             ),

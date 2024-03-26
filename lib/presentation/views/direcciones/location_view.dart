@@ -23,8 +23,6 @@ class LocationScreenState extends ConsumerState<LocationView> {
   @override
   Widget build(BuildContext context) {
     final rickMortyapi = ref.watch(rickMortyProvider);
-    final index = ref.watch(rickMortyBotton);
-    const iconSized = 35.0;
 
     return Scaffold(
       backgroundColor: Colors.white10,
