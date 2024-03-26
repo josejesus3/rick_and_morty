@@ -38,13 +38,14 @@ class RickMortyDB extends RickMortyDatasources {
   }
 
   @override
-  Future<List<RickMortyEpisode>> getEpisode({int page = 1}) async {
-    final response = await dio.get('/episode', queryParameters: {'page': page});
+  Future<List<RickMortyEpisode>> getEpisode(List<int> id) async {
+    final response = await dio.get(
+      '/episode/$id',
+    );
     final rickMortyEpisode = Episode.fromJson(response.data);
     final List<RickMortyEpisode> rickMorty = rickMortyEpisode.results
         .map((rickMorty) => RickMortyMapper.rickMortyDBToEpisode(rickMorty))
         .toList();
-
     return rickMorty;
   }
 }

@@ -1,8 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
@@ -22,7 +19,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   void initState() {
     super.initState();
     ref.read(characterInfoProvider.notifier).loadChart(widget.characterId);
-    ref.read(rickMortyEpisodeProvider.notifier).loadNextPage();
+    ref.read(rickMortyEpisodeProvider.notifier).loadNextPage([1, 2]);
   }
 
   @override
@@ -105,27 +102,27 @@ class _CharacterView extends StatelessWidget {
             itemCount: episode.length,
             itemBuilder: (context, index) {
               final episodios = episode[index];
-
+              print(episodios);
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Container(
-                  
                   decoration: BoxDecoration(
-                    border: const Border(bottom:BorderSide(width: 2) ),
-                    borderRadius: BorderRadius.circular(10)
-                  ),
+                      border: const Border(bottom: BorderSide(width: 2)),
+                      borderRadius: BorderRadius.circular(10)),
                   width: size.width * 0,
                   child: ListTile(
                     leading: Text(
                       episodios.episode,
-                    style: textStyle.labelLarge,),
+                      style: textStyle.labelLarge,
+                    ),
                     title: Text(episodios.name,
                         textAlign: TextAlign.start,
                         maxLines: 2,
                         style:
                             const TextStyle(overflow: TextOverflow.ellipsis)),
                     trailing: Text(
-                      episodios.airDate,style: textStyle.labelMedium,
+                      episodios.airDate,
+                      style: textStyle.labelMedium,
                     ),
                   ),
                 ),

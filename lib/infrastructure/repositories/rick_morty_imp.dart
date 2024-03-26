@@ -17,9 +17,9 @@ class RickMortyImp extends RickMortyRepositories {
   Future<RickMorty> getCharacterId(String id) {
     return datasources.getCharacterId(id);
   }
-  
+
   @override
-  Future<List<RickMortyEpisode>> getEpisode({int page = 1}) {
-   return datasources.getEpisode(page: page);
+  Future<List<RickMortyEpisode>> getEpisode(List<int> id) {
+    return datasources.getEpisode(id);
   }
 }
