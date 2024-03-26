@@ -8,6 +8,7 @@ final rickMortyProvider=StateNotifierProvider<RickMortyNotifier,List<RickMorty>>
 
 } );
 
+
 typedef RickMortyCallback = Future<List<RickMorty>> Function({int page});
 
 class RickMortyNotifier extends StateNotifier<List<RickMorty>> {
