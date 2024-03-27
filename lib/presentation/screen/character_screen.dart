@@ -1,9 +1,9 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:rick_and_morty/domain/entities/episode.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
-import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
-import 'package:rick_and_morty/presentation/provider/rick_morty_chart_provider.dart';
+import 'package:rick_and_morty/presentation/provider/provider.dart';
 import 'package:rick_and_morty/presentation/provider/rick_morty_episode_provider.dart';
 
 class CharacterScreen extends ConsumerStatefulWidget {
@@ -18,16 +18,16 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(characterInfoProvider.notifier).loadChart(widget.characterId);
-    ref.read(rickMortyEpisodeProvider.notifier).loadNextPage([1, 2]);
+    ref.read(characterIdProvider.notifier).loadChart(widget.characterId);
+    ref.read(episodesIdProvider.notifier).loadEpisode(widget.characterId);
   }
 
   @override
   Widget build(BuildContext context) {
     final RickMorty? rickMorty =
-        ref.watch(characterInfoProvider)[widget.characterId];
+        ref.watch(characterIdProvider)[widget.characterId];
 
-    final List<RickMortyEpisode> episode = ref.watch(rickMortyEpisodeProvider);
+    final Episodes? episode = ref.watch(episodesIdProvider)[widget.characterId];
 
     if (rickMorty == null) {
       return const Center(
@@ -61,11 +61,14 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
 
 class _CharacterView extends StatelessWidget {
   final RickMorty rickMorty;
-  final List<RickMortyEpisode> episode;
+  final Episodes? episode;
   const _CharacterView({required this.rickMorty, required this.episode});
 
   @override
   Widget build(BuildContext context) {
+    print(episode?.airDate);
+    print(episode!.created);
+    print(episode!.episode);
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
     return Column(
@@ -98,36 +101,29 @@ class _CharacterView extends StatelessWidget {
         ),
         SizedBox(
           height: size.height * 0.35,
-          child: ListView.builder(
-            itemCount: episode.length,
-            itemBuilder: (context, index) {
-              final episodios = episode[index];
-              print(episodios);
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: const Border(bottom: BorderSide(width: 2)),
-                      borderRadius: BorderRadius.circular(10)),
-                  width: size.width * 0,
-                  child: ListTile(
-                    leading: Text(
-                      episodios.episode,
-                      style: textStyle.labelLarge,
-                    ),
-                    title: Text(episodios.name,
-                        textAlign: TextAlign.start,
-                        maxLines: 2,
-                        style:
-                            const TextStyle(overflow: TextOverflow.ellipsis)),
-                    trailing: Text(
-                      episodios.airDate,
-                      style: textStyle.labelMedium,
-                    ),
-                  ),
+          width: 100,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(
+                  border: const Border(bottom: BorderSide(width: 2)),
+                  borderRadius: BorderRadius.circular(10)),
+              width: size.width * 0,
+              child: ListTile(
+                leading: Text(
+                  episode!.episode,
+                  style: textStyle.labelLarge,
                 ),
-              );
-            },
+                title: Text(episode!.name,
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
+                    style: const TextStyle(overflow: TextOverflow.ellipsis)),
+                trailing: Text(
+                  episode!.airDate,
+                  style: textStyle.labelMedium,
+                ),
+              ),
+            ),
           ),
         )
       ],

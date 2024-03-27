@@ -1,39 +1,23 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
-import 'package:rick_and_morty/presentation/provider/rick_morty_repositori.dart';
+import 'package:rick_and_morty/domain/entities/episode.dart';
+import 'package:rick_and_morty/presentation/provider/provider.dart';
 
-final rickMortyEpisodeProvider =
-    StateNotifierProvider<RickMortyNotifier, List<RickMortyEpisode>>((ref) {
-  final getRickMorty = ref.watch(rickMortyRepositoriProvider).getEpisode;
-  return RickMortyNotifier(getRickMorty: getRickMorty);
+final episodesIdProvider =
+    StateNotifierProvider<CharacterNotifier, Map<String, Episodes>>((ref) {
+  final fetchMoreCharacter = ref.watch(rickMortyRepositoriProvider).getEpisode;
+  return CharacterNotifier(getCharacter: fetchMoreCharacter);
 });
 
-typedef RickMortyCallback = Future<List<RickMortyEpisode>> Function(
-    List<int> id);
+typedef GetCharacterCallback = Future<Episodes> Function(String id);
 
-class RickMortyNotifier extends StateNotifier<List<RickMortyEpisode>> {
-  int currentPage = 0;
-  bool isLoading = false;
-  RickMortyCallback getRickMorty;
+class CharacterNotifier extends StateNotifier<Map<String, Episodes>> {
+  final GetCharacterCallback getCharacter;
+  CharacterNotifier({required this.getCharacter}) : super({});
 
-  RickMortyNotifier({required this.getRickMorty}) : super([]);
+  Future<void> loadEpisode(String id) async {
+    if (state[id.toString()] != null) return;
 
-  Future<void> loadNextPage(List<int> id) async {
-    if (id.isEmpty || isLoading)
-      return; // Agrega verificación si id está vacío o si ya se está cargando
-
-    try {
-      isLoading = true; // Marca que se está cargando
-
-      final characters = await getRickMorty(id);
-      state = [
-        ...state,
-        ...characters
-      ]; // Agrega los nuevos personajes a la lista existente
-
-      isLoading = false; // Marca que la carga ha terminado
-    } catch (error) {
-      // Maneja errores aquí
-    }
+    final character = await getCharacter(id);
+    state = {...state, id.toString(): character};
   }
 }

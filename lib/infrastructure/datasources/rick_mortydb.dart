@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:rick_and_morty/domain/datasources/rick_morty_datasources.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
-import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
+import 'package:rick_and_morty/domain/entities/episode.dart';
 import 'package:rick_and_morty/infrastructure/mappers/rick_morty_mapper.dart';
 import 'package:rick_and_morty/infrastructure/models/rick_morty_characters.dart';
 import 'package:rick_and_morty/infrastructure/models/rick_morty_episode.dart';
@@ -31,21 +31,20 @@ class RickMortyDB extends RickMortyDatasources {
     final response = await dio.get('/character/$id');
     if (response.statusCode != 200)
       throw Exception('Character with id:$id not found');
-    final characterDB = RickMortyResponse.fromJson(response.data);
+    final episodeDB = RickMortyResponse.fromJson(response.data);
     final RickMorty movieDetails =
-        RickMortyMapper.rickMortyDBToEntity(characterDB);
+        RickMortyMapper.rickMortyDBToEntity(episodeDB);
     return movieDetails;
   }
 
   @override
-  Future<List<RickMortyEpisode>> getEpisode(List<int> id) async {
-    final response = await dio.get(
-      '/episode/$id',
-    );
-    final rickMortyEpisode = Episode.fromJson(response.data);
-    final List<RickMortyEpisode> rickMorty = rickMortyEpisode.results
-        .map((rickMorty) => RickMortyMapper.rickMortyDBToEpisode(rickMorty))
-        .toList();
-    return rickMorty;
+  Future<Episodes> getEpisode(String id) async {
+    final response = await dio.get('/episode/$id');
+    if (response.statusCode != 200)
+      throw Exception('Episode with id:$id not found');
+    final episodeDB = EpisodesApi.fromJson(response.data);
+    final Episodes movieDetails =
+        RickMortyMapper.rickMortyDBToEpisode(episodeDB);
+    return movieDetails;
   }
 }
