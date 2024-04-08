@@ -2,9 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
-import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
-import 'package:rick_and_morty/presentation/provider/rick_morty_chart_provider.dart';
-import 'package:rick_and_morty/presentation/provider/rick_morty_episode_provider.dart';
+import 'package:rick_and_morty/presentation/provider/rick_morty_id_provider.dart';
 
 class CharacterScreen extends ConsumerStatefulWidget {
   final String characterId;
@@ -19,24 +17,21 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   void initState() {
     super.initState();
     ref.read(characterInfoProvider.notifier).loadChart(widget.characterId);
-    ref.read(rickMortyEpisodeProvider.notifier).loadNextPage([1, 2]);
   }
 
   @override
   Widget build(BuildContext context) {
     final RickMorty? rickMorty =
         ref.watch(characterInfoProvider)[widget.characterId];
+        if(rickMorty==null){
+          return const Scaffold(
+            backgroundColor: Colors.white10,
+            body: Center(
+              child: CircularProgressIndicator(strokeWidth: 2,color: Colors.blue,),
+            ),
+          );
+        }
 
-    final List<RickMortyEpisode> episode = ref.watch(rickMortyEpisodeProvider);
-
-    if (rickMorty == null) {
-      return const Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: Colors.blue,
-        ),
-      );
-    }
     return Scaffold(
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
@@ -46,9 +41,8 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => _CharacterView(
+              (context, index) => CharacterView(
                 rickMorty: rickMorty,
-                episode: episode,
               ),
               childCount: 1,
             ),
@@ -59,15 +53,21 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   }
 }
 
-class _CharacterView extends StatelessWidget {
+class CharacterView extends StatelessWidget {
   final RickMorty rickMorty;
-  final List<RickMortyEpisode> episode;
-  const _CharacterView({required this.rickMorty, required this.episode});
+
+  const CharacterView({
+    super.key,
+    required this.rickMorty,
+  });
+
+ 
 
   @override
-  Widget build(BuildContext context) {
+   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -86,53 +86,14 @@ class _CharacterView extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              SizedBox(
-                width: (size.width - 40) * 0.5,
-                child: _Text(
-                  rickMorty: rickMorty,
-                  textStyle: textStyle,
-                ),
-              ),
+              _Text(rickMorty: rickMorty, textStyle: textStyle)
             ],
           ),
         ),
-        SizedBox(
-          height: size.height * 0.35,
-          child: ListView.builder(
-            itemCount: episode.length,
-            itemBuilder: (context, index) {
-              final episodios = episode[index];
-              print(episodios);
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  decoration: BoxDecoration(
-                      border: const Border(bottom: BorderSide(width: 2)),
-                      borderRadius: BorderRadius.circular(10)),
-                  width: size.width * 0,
-                  child: ListTile(
-                    leading: Text(
-                      episodios.episode,
-                      style: textStyle.labelLarge,
-                    ),
-                    title: Text(episodios.name,
-                        textAlign: TextAlign.start,
-                        maxLines: 2,
-                        style:
-                            const TextStyle(overflow: TextOverflow.ellipsis)),
-                    trailing: Text(
-                      episodios.airDate,
-                      style: textStyle.labelMedium,
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        )
       ],
     );
   }
+ 
 }
 
 class _CustomSliverAppBar extends StatelessWidget {

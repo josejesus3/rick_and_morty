@@ -1,10 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:rick_and_morty/domain/datasources/rick_morty_datasources.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
-import 'package:rick_and_morty/domain/entities/rick_morty_episode.dart';
 import 'package:rick_and_morty/infrastructure/mappers/rick_morty_mapper.dart';
+import 'package:rick_and_morty/infrastructure/models/episode.dart';
 import 'package:rick_and_morty/infrastructure/models/rick_morty_characters.dart';
-import 'package:rick_and_morty/infrastructure/models/rick_morty_episode.dart';
 import 'package:rick_and_morty/infrastructure/models/rick_morty_response.dart';
 
 class RickMortyDB extends RickMortyDatasources {
@@ -38,14 +37,11 @@ class RickMortyDB extends RickMortyDatasources {
   }
 
   @override
-  Future<List<RickMortyEpisode>> getEpisode(List<int> id) async {
-    final response = await dio.get(
-      '/episode/$id',
-    );
-    final rickMortyEpisode = Episode.fromJson(response.data);
-    final List<RickMortyEpisode> rickMorty = rickMortyEpisode.results
-        .map((rickMorty) => RickMortyMapper.rickMortyDBToEpisode(rickMorty))
-        .toList();
-    return rickMorty;
+  Future<List<Episode>> getEpisodes(List<String> personaje) {
+    // TODO: implement getEpisodes
+    throw UnimplementedError();
   }
+
+ 
 }
+

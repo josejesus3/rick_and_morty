@@ -19,6 +19,6 @@ class CharacterNotifier extends StateNotifier<Map<String, RickMorty>> {
     if (state[id.toString()] != null) return;
 
     final character = await getCharacter(id);
-    state = {...state, id.toString(): character};
+    state = {...state, id: character};
   }
 }

@@ -6,4 +6,3 @@ final rickMortyRepositoriProvider = Provider(
   (ref) => RickMortyImp(datasources: RickMortyDB()),
 );
 
-final rickMortyBotton = StateProvider((ref) => 0);

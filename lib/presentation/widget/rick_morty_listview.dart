@@ -58,7 +58,7 @@ class _RickMortyListViewState extends State<RickMortyListView> {
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   color: Colors.white24,
-                  height: sized.height * 0.2,
+                  height: sized.height >=400?sized.height*0.18:sized.height*0.4,
                   child: Row(
                     children: [
                       Image.network(
