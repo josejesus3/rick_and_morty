@@ -2,11 +2,17 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
+import 'package:rick_and_morty/presentation/provider/episode_provider.dart';
 import 'package:rick_and_morty/presentation/provider/rick_morty_id_provider.dart';
 
 class CharacterScreen extends ConsumerStatefulWidget {
   final String characterId;
-  const CharacterScreen({super.key, required this.characterId});
+  final List<String> personaje;
+  const CharacterScreen({
+    super.key,
+    required this.characterId,
+    required this.personaje,
+  });
 
   @override
   CharacterScreenState createState() => CharacterScreenState();
@@ -17,20 +23,26 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   void initState() {
     super.initState();
     ref.read(characterInfoProvider.notifier).loadChart(widget.characterId);
+    ref.read(episodeProvider.notifier).loadEpisode(widget.personaje);
+    print(ref.read(episodeProvider.notifier).loadEpisode(widget.personaje));
   }
 
   @override
   Widget build(BuildContext context) {
     final RickMorty? rickMorty =
         ref.watch(characterInfoProvider)[widget.characterId];
-        if(rickMorty==null){
-          return const Scaffold(
-            backgroundColor: Colors.white10,
-            body: Center(
-              child: CircularProgressIndicator(strokeWidth: 2,color: Colors.blue,),
-            ),
-          );
-        }
+
+    if (rickMorty == null) {
+      return const Scaffold(
+        backgroundColor: Colors.white10,
+        body: Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Colors.blue,
+          ),
+        ),
+      );
+    }
 
     return Scaffold(
       body: CustomScrollView(
@@ -61,10 +73,8 @@ class CharacterView extends StatelessWidget {
     required this.rickMorty,
   });
 
- 
-
   @override
-   Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
 
@@ -93,7 +103,6 @@ class CharacterView extends StatelessWidget {
       ],
     );
   }
- 
 }
 
 class _CustomSliverAppBar extends StatelessWidget {

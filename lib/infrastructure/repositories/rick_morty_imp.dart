@@ -20,7 +20,6 @@ class RickMortyImp extends RickMortyRepositories {
 
   @override
   Future<List<Episode>> getEpisodes(List<String> personaje) {
-    // TODO: implement getEpisodes
-    throw UnimplementedError();
+    return datasources.getEpisodes(personaje);
   }
 }

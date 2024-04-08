@@ -37,11 +37,20 @@ class RickMortyDB extends RickMortyDatasources {
   }
 
   @override
-  Future<List<Episode>> getEpisodes(List<String> personaje) {
-    // TODO: implement getEpisodes
-    throw UnimplementedError();
+  Future<List<Episode>> getEpisodes(List<String> personaje) async {
+    final dio = Dio();
+    List<Episode> episodes = [];
+    final response =
+        await dio.get('https://rickandmortyapi.com/api/episode/$personaje');
+    for (var element in response.data) {
+      if (response.statusCode == 200) {
+        final Episode episode = Episode.fromJson(element);
+        episodes.add(episode);
+      } else {
+        print('error');
+      }
+    }
+
+    return episodes;
   }
-
- 
 }
-

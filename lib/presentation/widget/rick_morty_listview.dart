@@ -1,7 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
+import 'package:rick_and_morty/presentation/screen/character_screen.dart';
 
 class RickMortyListView extends StatefulWidget {
   final List<RickMorty> rickMorty;
@@ -44,21 +44,31 @@ class _RickMortyListViewState extends State<RickMortyListView> {
   @override
   Widget build(BuildContext context) {
     final sized = MediaQuery.of(context).size;
+
     return Expanded(
       child: ListView.builder(
         itemCount: widget.rickMorty.length,
         controller: scrollController,
         itemBuilder: (context, index) {
           final rickMorty = widget.rickMorty[index];
+
           return GestureDetector(
-            onTap: ()=>context.push('/character/${rickMorty.id}'),
+            onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CharacterScreen(
+                      characterId: rickMorty.id.toString(),
+                      personaje: rickMorty.episode),
+                )),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),
                 child: Container(
                   color: Colors.white24,
-                  height: sized.height >=400?sized.height*0.18:sized.height*0.4,
+                  height: sized.height >= 400
+                      ? sized.height * 0.18
+                      : sized.height * 0.4,
                   child: Row(
                     children: [
                       Image.network(
@@ -73,7 +83,10 @@ class _RickMortyListViewState extends State<RickMortyListView> {
                                   gradient: LinearGradient(
                                     begin: Alignment.bottomCenter,
                                     end: Alignment.topCenter,
-                                    colors: [Colors.transparent, Colors.white54],
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.white54
+                                    ],
                                   ),
                                 ),
                               ),

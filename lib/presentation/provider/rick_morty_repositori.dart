@@ -5,4 +5,3 @@ import 'package:rick_and_morty/infrastructure/repositories/rick_morty_imp.dart';
 final rickMortyRepositoriProvider = Provider(
   (ref) => RickMortyImp(datasources: RickMortyDB()),
 );
-
