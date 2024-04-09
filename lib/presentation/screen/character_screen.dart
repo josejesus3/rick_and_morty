@@ -1,10 +1,12 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
 import 'package:rick_and_morty/infrastructure/models/episode.dart';
 import 'package:rick_and_morty/presentation/provider/episode_provider.dart';
-import 'package:rick_and_morty/presentation/provider/rick_morty_id_provider.dart';
+import 'package:rick_and_morty/presentation/provider/character_id_provider.dart';
 
 class CharacterScreen extends ConsumerStatefulWidget {
   final String characterId;
@@ -31,6 +33,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   @override
   void dispose() {
     super.dispose();
+    episodes = [];
   }
 
   @override
@@ -53,6 +56,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
     episodes = episode;
 
     return Scaffold(
+      backgroundColor: Colors.white10,
       body: CustomScrollView(
         physics: const ClampingScrollPhysics(),
         slivers: [
@@ -92,32 +96,39 @@ class CharacterView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(
-                  rickMorty.image,
-                  width: size.width * 0.3,
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              _Text(rickMorty: rickMorty, textStyle: textStyle),
-            ],
-          ),
+        const SizedBox(
+          width: 20,
+        ),
+        Wrap(
+          children: [
+            _Contenedor(
+              rickMorty: rickMorty,
+              textStyle: textStyle,
+              data: rickMorty.gender,
+            ),
+            _Contenedor(
+              rickMorty: rickMorty,
+              textStyle: textStyle,
+              data: rickMorty.status,
+            ),
+            _Contenedor(
+              rickMorty: rickMorty,
+              textStyle: textStyle,
+              data: rickMorty.species,
+            ),
+          ],
         ),
         ...episode.map(
           (list) => SizedBox(
             height: 100,
             child: ListTile(
+              textColor: Colors.white,
+              leading: Text(list.episode),
               title: Text(
-                list.episode,
-                style: textStyle.titleLarge,
+                list.name,
+              ),
+              trailing: Text(
+                list.created,
               ),
             ),
           ),
@@ -136,6 +147,7 @@ class _CustomSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sized = MediaQuery.of(context).size;
+    final textStyle = Theme.of(context).textTheme;
     return SliverAppBar(
       backgroundColor: Colors.black,
       expandedHeight: sized.height * 0.4,
@@ -165,6 +177,14 @@ class _CustomSliverAppBar extends StatelessWidget {
                 ),
               ),
             ),
+            Positioned(
+                bottom: 0,
+                left: 30,
+                child: Text(
+                  rickMorty.name,
+                  maxLines: 2,
+                  style: const TextStyle(fontSize: 30, color: Colors.white),
+                )),
           ],
         ),
       ),
@@ -172,54 +192,30 @@ class _CustomSliverAppBar extends StatelessWidget {
   }
 }
 
-class _Text extends StatelessWidget {
+class _Contenedor extends StatelessWidget {
+  final RickMorty rickMorty;
   final TextTheme textStyle;
-  const _Text({
+  final String data;
+  const _Contenedor({
     required this.rickMorty,
     required this.textStyle,
+    required this.data,
   });
-
-  final RickMorty rickMorty;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(rickMorty.name,
-            maxLines: 2,
-            style: textStyle
-                .titleLarge //const TextStyle(color: Colors.white, fontSize: 20),
-            ),
-        Row(
-          children: [
-            rickMorty.status != 'Dead'
-                ? const Icon(
-                    Icons.circle_sharp,
-                    color: Colors.green,
-                    size: 10,
-                  )
-                : const Icon(
-                    Icons.circle_sharp,
-                    color: Colors.red,
-                    size: 10,
-                  ),
-            Text('  ${rickMorty.status}--${rickMorty.species}',
-                style: textStyle.titleMedium),
-          ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Container(
+        height: 30,
+        width: 80,
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.white),
+            borderRadius: BorderRadius.circular(10)),
+        child: Center(
+          child: Text(data, style: const TextStyle(color: Colors.white)),
         ),
-        const Text(
-          'Origenes:',
-          style: TextStyle(
-            color: Colors.black54,
-          ),
-        ),
-        Text(
-          rickMorty.origin.name,
-          style: textStyle.titleMedium,
-          maxLines: 2,
-        ),
-      ],
+      ),
     );
   }
 }

@@ -33,7 +33,7 @@ class EpisodeNotifier extends StateNotifier<List<Episode>> {
     await Future.delayed(const Duration(milliseconds: 300));
     // Obtener los episodios asociados con el personaje
     final List<Episode> allEpisodes = await getEpisodes(character.episode);
-
+    print(character);
     // Asignar los episodios filtrados al estado
     state = [...allEpisodes];
     await Future.delayed(const Duration(milliseconds: 300));
