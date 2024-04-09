@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
+import 'package:rick_and_morty/infrastructure/models/episode.dart';
 import 'package:rick_and_morty/presentation/provider/episode_provider.dart';
 import 'package:rick_and_morty/presentation/provider/rick_morty_id_provider.dart';
 
@@ -23,14 +24,14 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   void initState() {
     super.initState();
     ref.read(characterInfoProvider.notifier).loadChart(widget.characterId);
-    ref.read(episodeProvider.notifier).loadEpisode(widget.personaje);
-    print(ref.read(episodeProvider.notifier).loadEpisode(widget.personaje));
+    ref.read(episodeProvider.notifier).loadEpisode(widget.characterId);
   }
 
   @override
   Widget build(BuildContext context) {
     final RickMorty? rickMorty =
         ref.watch(characterInfoProvider)[widget.characterId];
+    final List<Episode> episode = ref.watch(episodeProvider);
 
     if (rickMorty == null) {
       return const Scaffold(
@@ -55,6 +56,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) => CharacterView(
                 rickMorty: rickMorty,
+                episode: episode,
               ),
               childCount: 1,
             ),
@@ -67,10 +69,12 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
 
 class CharacterView extends StatelessWidget {
   final RickMorty rickMorty;
+  final List<Episode> episode;
 
   const CharacterView({
     super.key,
     required this.rickMorty,
+    required this.episode,
   });
 
   @override
@@ -96,7 +100,10 @@ class CharacterView extends StatelessWidget {
               const SizedBox(
                 width: 20,
               ),
-              _Text(rickMorty: rickMorty, textStyle: textStyle)
+              _Text(rickMorty: rickMorty, textStyle: textStyle),
+              ...episode.map((list) => ListTile(
+                    title: Text(list.episode),
+                  ))
             ],
           ),
         ),

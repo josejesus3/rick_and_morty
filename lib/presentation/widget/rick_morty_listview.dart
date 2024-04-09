@@ -1,3 +1,4 @@
+
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
@@ -42,9 +43,10 @@ class _RickMortyListViewState extends State<RickMortyListView> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     final sized = MediaQuery.of(context).size;
-
+    List<String> episodios = [];
     return Expanded(
       child: ListView.builder(
         itemCount: widget.rickMorty.length,
@@ -54,12 +56,13 @@ class _RickMortyListViewState extends State<RickMortyListView> {
 
           return GestureDetector(
             onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => CharacterScreen(
-                      characterId: rickMorty.id.toString(),
-                      personaje: rickMorty.episode),
-                )),
+              context,
+              MaterialPageRoute(
+                builder: (context) => CharacterScreen(
+                    characterId: rickMorty.id.toString(),
+                    personaje: episodios), // Pasar el substring como personaje
+              ),
+            ),
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: ClipRRect(
