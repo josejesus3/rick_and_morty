@@ -30,12 +30,12 @@ class EpisodeNotifier extends StateNotifier<List<Episode>> {
     // Obtener información del personaje usando characterInfoProvider
     final RickMorty character =
         await characterInfoProvider.getCharacterId(characterId);
-    await  Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 300));
     // Obtener los episodios asociados con el personaje
     final List<Episode> allEpisodes = await getEpisodes(character.episode);
 
     // Asignar los episodios filtrados al estado
-    state = [...state, ...allEpisodes];
+    state = [...allEpisodes];
     await Future.delayed(const Duration(milliseconds: 300));
     isLoading = false;
   }

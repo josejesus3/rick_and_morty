@@ -20,6 +20,7 @@ class CharacterScreen extends ConsumerStatefulWidget {
 }
 
 class CharacterScreenState extends ConsumerState<CharacterScreen> {
+  List<Episode> episodes = [];
   @override
   void initState() {
     super.initState();
@@ -28,12 +29,17 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final RickMorty? rickMorty =
         ref.watch(characterInfoProvider)[widget.characterId];
     final List<Episode> episode = ref.watch(episodeProvider);
 
-    if (rickMorty == null) {
+    if (rickMorty == null || episode.isEmpty) {
       return const Scaffold(
         backgroundColor: Colors.white10,
         body: Center(
@@ -44,6 +50,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
         ),
       );
     }
+    episodes = episode;
 
     return Scaffold(
       body: CustomScrollView(
@@ -56,7 +63,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
             delegate: SliverChildBuilderDelegate(
               (context, index) => CharacterView(
                 rickMorty: rickMorty,
-                episode: episode,
+                episode: episodes,
               ),
               childCount: 1,
             ),
@@ -101,12 +108,20 @@ class CharacterView extends StatelessWidget {
                 width: 20,
               ),
               _Text(rickMorty: rickMorty, textStyle: textStyle),
-              ...episode.map((list) => ListTile(
-                    title: Text(list.episode),
-                  ))
             ],
           ),
         ),
+        ...episode.map(
+          (list) => SizedBox(
+            height: 100,
+            child: ListTile(
+              title: Text(
+                list.episode,
+                style: textStyle.titleLarge,
+              ),
+            ),
+          ),
+        )
       ],
     );
   }

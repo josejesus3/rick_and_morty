@@ -27,6 +27,10 @@ class Episode {
         created: json["created"],
       );
 
+  static List<Episode> fromJsonList(List<dynamic> jsonList) {
+    return jsonList.map((json) => Episode.fromJson(json)).toList();
+  }
+
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
