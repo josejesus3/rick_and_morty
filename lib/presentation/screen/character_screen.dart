@@ -1,7 +1,5 @@
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty/domain/entities/rick_morty.dart';
 import 'package:rick_and_morty/infrastructure/models/episode.dart';
@@ -23,6 +21,7 @@ class CharacterScreen extends ConsumerStatefulWidget {
 
 class CharacterScreenState extends ConsumerState<CharacterScreen> {
   List<Episode> episodes = [];
+  bool isLoading = false;
   @override
   void initState() {
     super.initState();
@@ -68,6 +67,7 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
               (context, index) => CharacterView(
                 rickMorty: rickMorty,
                 episode: episodes,
+                isLoading: isLoading,
               ),
               childCount: 1,
             ),
@@ -81,11 +81,13 @@ class CharacterScreenState extends ConsumerState<CharacterScreen> {
 class CharacterView extends StatelessWidget {
   final RickMorty rickMorty;
   final List<Episode> episode;
+  final bool isLoading;
 
   const CharacterView({
     super.key,
     required this.rickMorty,
     required this.episode,
+    required this.isLoading,
   });
 
   @override
@@ -128,7 +130,7 @@ class CharacterView extends StatelessWidget {
                 list.name,
               ),
               trailing: Text(
-                list.created,
+                list.created.substring(0, 10),
               ),
             ),
           ),
@@ -147,10 +149,10 @@ class _CustomSliverAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sized = MediaQuery.of(context).size;
-    final textStyle = Theme.of(context).textTheme;
     return SliverAppBar(
       backgroundColor: Colors.black,
-      expandedHeight: sized.height * 0.4,
+      expandedHeight:
+          sized.height > 800 ? sized.height * 0.6 : sized.height * 0.4,
       foregroundColor: Colors.white,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: const EdgeInsets.only(left: 10, right: 20, bottom: 20),
