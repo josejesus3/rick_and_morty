@@ -41,11 +41,12 @@ class RickMortyDB extends RickMortyDatasources {
     final dio = Dio();
     List<Episode> episodes = [];
 
-    for (var element in personaje) {
-      final response = await dio.get(
-          'https://rickandmortyapi.com/api/episode/${element.substring(40)}');
-      if (response.statusCode == 200) {
-        final Episode episode = Episode.fromJson(response.data);
+    final response = await Future.wait(personaje.map((ids) => dio
+        .get('https://rickandmortyapi.com/api/episode/${ids.substring(40)}')));
+    for (var responses in response) {
+      if (responses.statusCode == 200) {
+        final Episode episode = Episode.fromJson(responses.data);
+        print(responses);
         episodes.add(episode);
       } else {
         print('error');
