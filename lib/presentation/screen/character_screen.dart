@@ -92,21 +92,20 @@ class CharacterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     final textStyle = Theme.of(context).textTheme;
 
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(
-          width: 20,
+          height: 10,
         ),
         Wrap(
           children: [
             _Contenedor(
               rickMorty: rickMorty,
               textStyle: textStyle,
-              data: rickMorty.gender,
+              data: rickMorty.origin.name,
             ),
             _Contenedor(
               rickMorty: rickMorty,
@@ -174,7 +173,19 @@ class _CustomSliverAppBar extends StatelessWidget {
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
                     stops: [0.0, 0.2],
-                    colors: [Colors.black87, Colors.transparent],
+                    colors: [Colors.black54, Colors.transparent],
+                  ),
+                ),
+              ),
+            ),
+             const SizedBox.expand(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    stops: [0.0, 0.1],
+                    colors: [Colors.black54, Colors.transparent],
                   ),
                 ),
               ),
@@ -210,12 +221,18 @@ class _Contenedor extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Container(
         height: 30,
-        width: 80,
+        width: 95,
         decoration: BoxDecoration(
             border: Border.all(color: Colors.white),
             borderRadius: BorderRadius.circular(10)),
         child: Center(
-          child: Text(data, style: const TextStyle(color: Colors.white)),
+          child: Text(
+            textAlign: TextAlign.left,
+            data, 
+            style: const TextStyle(color: Colors.white),
+            textWidthBasis: TextWidthBasis.longestLine,
+          
+          ),
         ),
       ),
     );
