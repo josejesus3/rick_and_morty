@@ -46,7 +46,7 @@ class RickMortyDB extends RickMortyDatasources {
     for (var responses in response) {
       if (responses.statusCode == 200) {
         final Episode episode = Episode.fromJson(responses.data);
-        print(responses);
+
         episodes.add(episode);
       } else {
         print('error');

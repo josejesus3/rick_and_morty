@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:rick_and_morty/presentation/views/direcciones/home_view.dart';
+import 'package:rick_and_morty/presentation/views/home_view.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({
